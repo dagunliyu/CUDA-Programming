@@ -1,6 +1,8 @@
 #pragma once
 #include <stdio.h>
 
+//宏函数的定义中为什么用了一个 do - while 语句？不用该语句在大部
+//分情况下也是可以的，但在某些情况下不安全
 #define CHECK(call)                                   \
 do                                                    \
 {                                                     \

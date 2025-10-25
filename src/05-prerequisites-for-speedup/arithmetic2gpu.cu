@@ -1,7 +1,11 @@
+
+
 #include "error.cuh"
 #include <math.h>
 #include <stdio.h>
 
+#include <cuda.h>
+ 
 #ifdef USE_DP
     typedef double real;
 #else

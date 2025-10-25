@@ -1,5 +1,9 @@
 #include <math.h>
 #include <stdio.h>
+#include <cuda.h>
+#include <cuda_fp16.h>
+#include "cuda_runtime.h"
+#include <driver_types.h>
 
 const double EPSILON = 1.0e-15;
 const double a = 1.23;

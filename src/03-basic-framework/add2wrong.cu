@@ -26,9 +26,10 @@ int main(void)
     cudaMalloc((void **)&d_x, M);
     cudaMalloc((void **)&d_y, M);
     cudaMalloc((void **)&d_z, M);
-    cudaMemcpy(d_x, h_x, M, cudaMemcpyDeviceToHost);
+    cudaMemcpy(d_x, h_x, M, cudaMemcpyDeviceToHost); // 故意写错, 应为cudaMemcpyHostToDevice
     cudaMemcpy(d_y, h_y, M, cudaMemcpyDeviceToHost);
 
+    // 使用具有128个线程的一维线程块, 一共10^8/128个这样的线程块
     const int block_size = 128;
     const int grid_size = N / block_size;
     add<<<grid_size, block_size>>>(d_x, d_y, d_z);

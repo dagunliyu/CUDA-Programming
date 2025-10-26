@@ -55,20 +55,32 @@ int main(void)
     return 0;
 }
 
+/////////////////////////////////////////////////////////////////
+// 自定义设备函数
+// 在设备中执行，在设备中调用. 而kernel是在设备中执行，在主机中调用
+
+// 现在也支持在kernel里调用自身，或在kernel中调用其他kernel
+
+// 下面三种实现形式不会导致程序性能的差别
+// 有返回值的设备函数 
 double __device__ add1_device(const double x, const double y)
 {
     return (x + y);
 }
 
+// 用指针的设备函数
+// 修改了指针z的值, 但是指针z本身的地址不变
 void __device__ add2_device(const double x, const double y, double *z)
 {
     *z = x + y;
 }
 
+// 用引用的设备函数
 void __device__ add3_device(const double x, const double y, double &z)
 {
     z = x + y;
 }
+/////////////////////////////////////////////////////////////////
 
 void __global__ add1(const double *x, const double *y, double *z, const int N)
 {

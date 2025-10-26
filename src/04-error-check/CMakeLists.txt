@@ -87,9 +87,9 @@ target_link_libraries(
     -lcudart
     -lcudadevrt)
 
-# set_property(TARGET 4-memcheck APPEND PROPERTY VS_PROJECT_IMPORT "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.1\\extras\\visual_studio_integration\\MSBuildExtensions\\CUDA 11.1.props")
-# set_property(TARGET 4-memcheck APPEND PROPERTY VS_PROJECT_IMPORT "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.1\\extras\\visual_studio_integration\\MSBuildExtensions\\CUDA 11.1.targets")
-# # target_compile_options(MyApp PIRVATE /bigobj /utf-8)
-# # target_link_options(MyApp PRIVATE /LARGEADDRESSAWARE)
+set_property(TARGET 4-memcheck APPEND PROPERTY VS_PROJECT_IMPORT "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.1\\extras\\visual_studio_integration\\MSBuildExtensions\\CUDA 11.1.props")
+set_property(TARGET 4-memcheck APPEND PROPERTY VS_PROJECT_IMPORT "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.1\\extras\\visual_studio_integration\\MSBuildExtensions\\CUDA 11.1.targets")
+# target_compile_options(MyApp PIRVATE /bigobj /utf-8)
+# target_link_options(MyApp PRIVATE /LARGEADDRESSAWARE)
 
-# set_target_properties(4-memcheck PROPERTIES CUDA_ARCHITECTURES "35;52;75;80")
+set_target_properties(4-memcheck PROPERTIES CUDA_ARCHITECTURES "35;52;75;80")

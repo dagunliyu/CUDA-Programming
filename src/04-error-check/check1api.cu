@@ -1,10 +1,6 @@
 #include "error.cuh"
 #include <math.h>
 #include <stdio.h>
-#include <cuda.h>
-#include <cuda_fp16.h>
-#include "cuda_runtime.h"
-#include <driver_types.h>
 
 const double EPSILON = 1.0e-15;
 const double a = 1.23;
@@ -47,7 +43,7 @@ int main(void)
 
     const int block_size = 128;
     const int grid_size = (N + block_size - 1) / block_size;
-    //add<<<grid_size, block_size>>>(d_x, d_y, d_z, N);
+    add<<<grid_size, block_size>>>(d_x, d_y, d_z, N);
 
     CHECK(cudaMemcpy(h_z, d_z, M, cudaMemcpyDeviceToHost));
     check(h_z, N);
@@ -66,14 +62,14 @@ void __global__ add(const double *x, const double *y, double *z, const int N)
     // blockDim.x：对于分配的一维数组来说,表示每个block的size
     // blockIdx.x：当前线程所在的block的idx
     // threadIdx.x: 当前线程在当前block中的idx
-    //const int n = blockDim.x * blockIdx.x + threadIdx.x;
-    //if (n < N)
-    //{
-    //    // 10000001/128 = 781250 余数为1, 若取gridsize=781250，则线程数一共就10^8，还少1个
-    //    // 取gridsize=781252，这样线程数是10^8+128，能覆盖100000001，只是多了127个线程
-    //    // 可通过if来规避不需要的线程，这样只有100000001个线程会生效，其他的线程不会执行到这个if里
-    //    z[n] = x[n] + y[n];
-    //}
+    const int n = blockDim.x * blockIdx.x + threadIdx.x;
+    if (n < N)
+    {
+        // 10000001/128 = 781250 余数为1, 若取gridsize=781250，则线程数一共就10^8，还少1个
+        // 取gridsize=781252，这样线程数是10^8+128，能覆盖100000001，只是多了127个线程
+        // 可通过if来规避不需要的线程，这样只有100000001个线程会生效，其他的线程不会执行到这个if里
+        z[n] = x[n] + y[n];
+    }
 
     // 第0号thread-block，包含第0~blockDim.x-1个线程(数组元素)
     // 第1号线程块：包含第blockDim.x ~ 2*blockDim.x-1个数组元素(线程)

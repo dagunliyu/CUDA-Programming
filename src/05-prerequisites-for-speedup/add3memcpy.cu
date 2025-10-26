@@ -74,6 +74,12 @@ int main(void)
     const float t_err = sqrt(t2_sum / NUM_REPEATS - t_ave * t_ave);
     printf("Time = %g +- %g ms.\n", t_ave, t_err);
 
+    //使用单精度时，
+    //    数据复制和核函数调用共耗时 180 毫秒；使用双精度时，它们共耗时 360 毫秒。
+    //    从上述测试得到的数据可以看到一个令人惊讶的结果：核函数的运行时间不到数据复
+    //    制时间的 2 % 。如果将 CPU 与 GPU 之间的数据传输时间也计入，CUDA 程序相对于 C++ 程
+    //    序得到的不是性能提升，而是性能降低。
+
     check(h_z, N);
 
     free(h_x);
@@ -84,6 +90,9 @@ int main(void)
     CHECK(cudaFree(d_z));
     return 0;
 }
+
+//如果一个程序的计算任务仅仅是将来自主机端的两个数组相加，并且要将结果传回主机端，使用 GPU 就不是一个明智的选择。那么，
+//什么样的计算任务能够用 GPU 获得加速呢？
 
 void __global__ add(const real *x, const real *y, real *z, const int N)
 {
@@ -107,3 +116,23 @@ void check(const real *z, const int N)
     printf("%s\n", has_error ? "Has errors" : "No errors");
 }
 
+//$ nvprof . / a.out
+//如果用上述命令时遇到了类似如下的错误提示：
+//Unable to profile application.Unified Memory profiling failed
+//则可以尝试将运行命令换为
+//$ nvprof --unified - memory - profiling off . / a.out
+//对程序 add3memcpy.cu 来说，在 GeForce RTX 2070 中使用上述命令，得到的部分结果如下
+//（单精度浮点数版本）：
+//Time(%) Time Calls Avg Min Max Name
+//47.00 % 134.38ms 2 67.191ms 62.854ms 71.527ms[CUDA memcpy HtoD]
+//40.13 % 114.74ms 1 114.74ms 114.74ms 114.74ms[CUDA memcpy DtoH]
+//12.86 % 36.778ms 11 3.3435ms 3.3424ms 3.3501ms add()
+//为排版方便起见，我们将 add() 函数中的参数类型省去了，而在原始的输出中函数的参数类型是保留的。
+// 第一列是此处列出的每类操作所用时间的百分比，
+// 第二列是每类操作用的总时间，
+// 第三列是每类操作被调用的次数，
+// 第四列是每类操作单次调用所用时间的平均值，
+// 第五列是每类操作单次调用所用时间的最小值，
+// 第六列是每类操作单次调用所用时间的最大值，
+// 第七列是每类操作的名称。
+// 从这里的输出可以看出核函数的执行时间及数据传输所用时间，它们和用 CUDA 事件获得的结果是一致的。

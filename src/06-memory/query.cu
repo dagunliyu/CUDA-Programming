@@ -1,5 +1,6 @@
 #include "error.cuh"
 #include <stdio.h>
+#include <device_types.h>
 
 int main(int argc, char *argv[])
 {

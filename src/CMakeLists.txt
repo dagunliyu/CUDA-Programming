@@ -41,7 +41,7 @@
     
 ##############################################
 cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
-project(CUDATutorial LANGUAGES CXX CUDA)
+project(CUDA-Programming LANGUAGES CXX CUDA)
 
 find_package(CUDA 10.0 REQUIRED)
 # 需下载安装cuda toolkit，直接搜即可
@@ -88,3 +88,10 @@ add_subdirectory(04-error-check)
 add_subdirectory(05-prerequisites-for-speedup)
 add_subdirectory(06-memory)
 add_subdirectory(07-global-memory)
+add_subdirectory(08-shared-memory)
+add_subdirectory(09-atomic)
+add_subdirectory(10-warp)
+add_subdirectory(11-stream)
+add_subdirectory(12-unified-memory)
+# add_subdirectory(13-md)
+add_subdirectory(14-libraries)
